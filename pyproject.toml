@@ -4,45 +4,59 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dataforge-api"
-version = "0.1.0"
+version = "0.3.0"
 description = "ETL pipeline orchestrator — FastAPI + Celery + SQLAlchemy"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 dependencies = [
-    "fastapi>=0.103.0",
-    "uvicorn[standard]>=0.23.0",
-    "pydantic>=2.3.0",          # Pydantic V2 — breaking change from earlier FastAPI work
-    "sqlalchemy>=2.0.20",
-    "alembic>=1.12.0",
-    "asyncpg>=0.28.0",
-    "celery>=5.3.4",
-    "redis>=5.0.0",
-    "httpx>=0.25.0",
+    # Python 3.13 features used:
+    #   - PEP 696: TypeVar defaults (cleaner generics)
+    #   - PEP 702: @deprecated decorator (stdlib warnings)
+    #   - Improved asyncio performance (30% faster task creation)
+    #   - Free-threaded mode (experimental, not used yet)
+    "fastapi>=0.115.0",              # 0.115: lifespan context, better error models
+    "uvicorn[standard]>=0.32.0",
+    "pydantic>=2.9.0",               # 2.9: model_config inheritance, faster validation
+    "sqlalchemy>=2.0.36",
+    "alembic>=1.14.0",
+    "asyncpg>=0.30.0",
+    "celery>=5.4.0",
+    "redis>=5.2.0",
+    "httpx>=0.28.0",
     "python-jose[cryptography]>=3.3.0",
-    "bcrypt>=4.0.1",
-    "apscheduler>=3.10.4",
-    "opentelemetry-api>=1.20.0",
-    "opentelemetry-sdk>=1.20.0",
-    "opentelemetry-instrumentation-fastapi>=0.41b0",
+    "bcrypt>=4.2.0",
+    "apscheduler>=3.11.0",
+    "opentelemetry-api>=1.28.0",
+    "opentelemetry-sdk>=1.28.0",
+    "opentelemetry-instrumentation-fastapi>=0.49b0",
+    "opentelemetry-exporter-otlp-proto-grpc>=1.28.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=7.4.0",
-    "pytest-asyncio>=0.21.0",
-    "httpx>=0.25.0",
-    "pytest-cov>=4.1.0",
-    "ruff>=0.0.290",
-    "mypy>=1.5.0",
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "respx>=0.21.0",
+    "httpx>=0.28.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
 ]
+
+[project.entry-points."dataforge.steps"]
+# Built-in plugin steps discoverable by third parties as reference
+csv_reader = "app.plugins.example_plugin:run_csv_reader"
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
-select = ["E", "F", "I", "UP"]
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "ASYNC", "S", "RUF"]
+ignore = ["S101", "S311"]  # allow assert in tests, non-crypto random
 
 [tool.mypy]
-python_version = "3.11"
-strict = false   # not there yet — progressive adoption
+python_version = "3.13"
+strict = true
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
