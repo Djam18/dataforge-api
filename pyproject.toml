@@ -6,14 +6,14 @@ build-backend = "hatchling.build"
 name = "dataforge-api"
 version = "0.3.0"
 description = "ETL pipeline orchestrator — FastAPI + Celery + SQLAlchemy"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
     # Python 3.13 features used:
     #   - PEP 696: TypeVar defaults (cleaner generics)
     #   - PEP 702: @deprecated decorator (stdlib warnings)
     #   - Improved asyncio performance (30% faster task creation)
     #   - Free-threaded mode (experimental, not used yet)
-    "fastapi>=0.115.0",              # 0.115: lifespan context, better error models
+    "fastapi>=0.128.0",              # 0.128: Python 3.14 native support, annotationlib integration
     "uvicorn[standard]>=0.32.0",
     "pydantic>=2.9.0",               # 2.9: model_config inheritance, faster validation
     "sqlalchemy>=2.0.36",
@@ -48,14 +48,14 @@ csv_reader = "app.plugins.example_plugin:run_csv_reader"
 
 [tool.ruff]
 line-length = 100
-target-version = "py313"
+target-version = "py314"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "ASYNC", "S", "RUF"]
 ignore = ["S101", "S311"]  # allow assert in tests, non-crypto random
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.14"
 strict = true
 ignore_missing_imports = true
 
